@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orion TradeHouse - Premium Learning Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#040209',
+                            surface: '#0d081b',
+                            card: '#120c24',
+                            sidebar: '#080512',
+                            accent: '#a855f7',
+                            accentGlow: '#d8b4fe',
+                            border: '#241743',
+                            borderGlow: '#49268f',
+                            success: '#10b981',
+                            textMuted: '#94a3b8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar style */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080512;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #241743;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
+        }
+        
+        /* Premium Glow Effects */
+        .glass-premium {
+            background: rgba(13, 8, 27, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .active-neon-glow {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+            border-color: rgba(216, 180, 254, 0.5);
+        }
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #ffe57f 0%, #ffc107 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #f3e8ff 0%, #c084fc 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Smooth scale transition */
+        .card-hover-effect {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-gray-100 font-sans min-h-screen selection:bg-brand-accent selection:text-white overflow-x-hidden">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-80 bg-brand-sidebar border-r border-brand-border flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <!-- Sidebar Header -->
+            <div class="p-5 border-b border-brand-border flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+                        <i data-lucide="orbit" class="w-6 h-6 text-white animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold tracking-wide text-lg text-white">ORION</h1>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-brand-accentGlow">TradeHouse Elite</span>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Fast Search & Overview Progress -->
+            <div class="p-4 border-b border-brand-border bg-brand-bg/40">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 w-4.5 h-4.5 text-gray-400"></i>
+                    <input type="text" id="sidebarSearch" oninput="searchLessonsInSidebar(this.value)" placeholder="Cari materi e-course..." class="w-full pl-9 pr-4 py-2 bg-brand-bg/80 border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white transition-colors">
+                </div>
+                <!-- Dynamic Progress Radial Ring & Text -->
+                <div class="mt-4 p-3 bg-brand-surface/60 rounded-xl border border-brand-border/60 flex items-center gap-3">
+                    <div class="relative w-11 h-11 flex items-center justify-center">
+                        <!-- SVG Circle Progress -->
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="22" cy="22" r="18" stroke="currentColor" stroke-width="3" class="text-brand-border" fill="transparent"/>
+                            <circle id="sidebarProgressCircle" cx="22" cy="22" r="18" stroke="currentColor" stroke-width="3" class="text-brand-accent transition-all duration-500" fill="transparent" stroke-dasharray="113" stroke-dashoffset="113"/>
+                        </svg>
+                        <span id="sidebarProgressPercent" class="absolute text-[10px] font-bold text-brand-accentGlow">0%</span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-brand-textMuted font-bold">Progress Anda</p>
+                        <h5 class="text-xs text-white font-extrabold"><span id="sidebarCompletedCount">0</span>/<span id="sidebarTotalCount">0</span> Selesai</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC SIDEBAR MENU ACCORDIONS -->
+            <div id="sidebarMenuContainer" class="flex-1 overflow-y-auto p-3 space-y-2">
+                <!-- Programmatically filled with complete structure -->
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-brand-border bg-brand-bg/50">
+                <div class="flex items-center gap-3 p-2 bg-brand-surface/40 rounded-xl border border-brand-border/40">
+                    <div class="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accentGlow font-bold text-xs border border-brand-accent/40">
+                        OP
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Elite Member</p>
+                        <p class="text-[10px] text-brand-textMuted">Orion Academy Player</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEWPORT -->
+        <main class="flex-1 flex flex-col h-full lg:pl-80 relative overflow-hidden">
+            <!-- Premium Glowing Orbs background -->
+            <div class="absolute top-[-250px] right-[-250px] w-[500px] h-[500px] bg-purple-900/15 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute bottom-[-150px] left-[-150px] w-[400px] h-[400px] bg-brand-accent/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <!-- HEADER AREA -->
+            <header class="h-16 border-b border-brand-border px-4 md:px-6 flex items-center justify-between z-40 bg-brand-bg/85 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-gray-300 hover:text-white hover:bg-brand-border/40 rounded-lg">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <!-- Active Breadcrumb -->
+                    <div class="hidden sm:flex items-center gap-2 text-xs text-brand-textMuted">
+                        <span id="headerPathClass" class="hover:text-brand-accentGlow transition-colors font-medium">Dashboard</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        <span id="headerPathSub" class="text-white font-semibold">Beranda</span>
+                    </div>
+                </div>
+
+                <!-- Action Utilities Buttons -->
+                <div class="flex items-center gap-2 md:gap-3">
+                    <button onclick="switchScreen('calculators')" class="px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surface/80 hover:border-brand-accent/40 text-xs font-bold flex items-center gap-1.5 text-brand-accentGlow transition-all">
+                        <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+                        <span class="hidden md:inline">Kalkulator Riset & Risk</span>
+                    </button>
+                    <button onclick="switchScreen('dashboard')" class="px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surface/80 hover:border-brand-accent/40 text-xs font-bold flex items-center gap-1.5 text-gray-300 transition-all">
+                        <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-brand-accent"></i>
+                        <span>Dashboard</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-6" id="appMainScrollArea">
+                
+                <!-- SCREEN 1: DASHBOARD -->
+                <div id="screenDashboard" class="space-y-6 max-w-6xl mx-auto py-2">
+                    <!-- Hero Banner -->
+                    <div class="relative rounded-3xl overflow-hidden border border-brand-border glass-premium p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div class="space-y-4 max-w-2xl text-center md:text-left z-10">
+                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-accent/15 border border-brand-accent/30 text-brand-accentGlow text-[10px] font-bold uppercase tracking-wider">
+                                <i data-lucide="award" class="w-3.5 h-3.5"></i> Platform Edukasi Orion Elite
+                            </span>
+                            <h2 class="text-2xl md:text-4xl font-black text-gradient-purple tracking-tight leading-tight">Orion TradeHouse Academy</h2>
+                            <p class="text-brand-textMuted text-xs md:text-sm leading-relaxed">
+                                Kuasai seluk-beluk pasar saham, finansial literasi, bandarmologi tingkat lanjut, dan money flow analisis melalui silabus terstruktur dari dasar hingga mahir.
+                            </p>
+                            <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                                <button onclick="startFirstUnreadLesson()" class="px-4 py-2 bg-gradient-to-r from-brand-accent to-purple-600 hover:from-purple-500 hover:to-brand-accent text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-accent/20 transition-all flex items-center gap-1.5">
+                                    <i data-lucide="play-circle" class="w-4 h-4"></i> Mulai Belajar Sekarang
+                                </button>
+                                <button onclick="switchScreen('calculators')" class="px-4 py-2 bg-brand-surface hover:bg-brand-border border border-brand-border text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                    <i data-lucide="compass" class="w-4 h-4 text-brand-accent"></i> Buka Tools Manajemen Risiko
+                                </button>
+                            </div>
+                        </div>
+                        <div class="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center relative shrink-0">
+                            <div class="absolute inset-0 bg-brand-accent/15 rounded-full filter blur-xl animate-pulse"></div>
+                            <i data-lucide="gem" class="w-24 h-24 text-brand-accentGlow drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- STATISTICS SCORECARD GRID -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-2xl bg-brand-surface border border-brand-border flex items-center gap-3">
+                            <div class="p-2.5 rounded-xl bg-purple-500/10 text-brand-accent">
+                                <i data-lucide="book-open" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Total Modul</p>
+                                <h4 class="text-lg font-black text-white" id="statDashboardTotal">0</h4>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-surface border border-brand-border flex items-center gap-3">
+                            <div class="p-2.5 rounded-xl bg-emerald-500/10 text-brand-success">
+                                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Selesai</p>
+                                <h4 class="text-lg font-black text-white" id="statDashboardCompleted">0</h4>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-surface border border-brand-border flex items-center gap-3">
+                            <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400">
+                                <i data-lucide="medal" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Predikat</p>
+                                <h4 class="text-sm font-black text-amber-300" id="statDashboardBadge">Beginner</h4>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-surface border border-brand-border flex items-center gap-3">
+                            <div class="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                                <i data-lucide="activity" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Sistem Trading</p>
+                                <h4 class="text-xs font-black text-white">Full Systematic</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMPLETE CLASSES MAP (Visual Grid) -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-black text-white flex items-center gap-2">
+                            <i data-lucide="align-left" class="w-5 h-5 text-brand-accent"></i>
+                            Struktur Lengkap & Silabus Orion TradeHouse
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="dashboardGridClasses">
+                            <!-- Populated with beautiful e-course folder blocks -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCREEN 2: VIDEO VIEWER -->
+                <div id="screenVideo" class="hidden space-y-6 max-w-6xl mx-auto py-1">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Main Left Column (Video Frame + Details) -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <!-- Responsive Resizable Video Wrapper -->
+                            <div id="wrapperVideoCard" class="relative rounded-2xl overflow-hidden border border-brand-border bg-black aspect-video shadow-2xl transition-all duration-300">
+                                <!-- Default Loading/No-Video State -->
+                                <div id="noVideoState" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-brand-surface">
+                                    <div class="w-14 h-14 rounded-full bg-brand-accent/10 border border-brand-accent/30 flex items-center justify-center mb-3">
+                                        <i data-lucide="play" class="w-6 h-6 text-brand-accent"></i>
+                                    </div>
+                                    <h4 class="text-lg font-extrabold text-white">Silakan Pilih Modul Video</h4>
+                                    <p class="text-brand-textMuted text-xs max-w-sm mt-1">Pilih video pembelajaran yang terstruktur di sebelah kanan atau lewat menu navigasi untuk memulai pemutaran.</p>
+                                </div>
+                                
+                                <iframe id="playerIframe" class="w-full h-full hidden" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                            </div>
+
+                            <!-- Meta Info & Interactive Actions -->
+                            <div class="p-5 rounded-2xl bg-brand-surface border border-brand-border space-y-4">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    <div>
+                                        <span id="playerLabelClass" class="text-[10px] font-bold uppercase tracking-wider text-brand-accentGlow">Kelas Saham</span>
+                                        <h3 id="playerLabelTitle" class="text-lg md:text-xl font-black text-white mt-0.5">Judul Video Pembelajaran</h3>
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                                        <button onclick="toggleActiveLessonCompletion()" id="btnMarkComplete" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accentGlow border border-brand-accent/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                            <span>Selesai Belajar</span>
+                                        </button>
+                                        <button onclick="toggleCinemaMode()" class="px-3 py-2 rounded-xl bg-brand-card text-gray-300 hover:text-white border border-brand-border text-xs font-bold flex items-center justify-center gap-1.5 transition-all" title="Mode Cinema">
+                                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                                            <span class="hidden sm:inline">Cinema</span>
+                                        </button>
+                                        <a id="btnExternalTarget" href="#" target="_blank" class="px-3 py-2 rounded-xl bg-brand-card text-gray-300 hover:text-white border border-brand-border text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                                            <span class="hidden sm:inline">Drive</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Security Instruction Toast -->
+                                <div class="p-3 bg-brand-bg/60 border border-brand-border rounded-xl flex gap-3">
+                                    <i data-lucide="help-circle" class="w-5 h-5 text-brand-accent shrink-0 mt-0.5"></i>
+                                    <p class="text-[11px] text-brand-textMuted leading-relaxed">
+                                        <strong>Catatan Google Drive Player:</strong> Jika pemutar video menampilkan error "Akses Ditolak", pastikan Anda sudah masuk (login) ke Google di tab browser ini, karena penyimpanan modul bersumber langsung dari Google Drive.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Notes Notepad (Persistent per Lesson) -->
+                            <div class="p-5 rounded-2xl bg-brand-surface border border-brand-border space-y-3">
+                                <div class="flex justify-between items-center border-b border-brand-border pb-2">
+                                    <h4 class="text-sm font-bold text-white flex items-center gap-1.5">
+                                        <i data-lucide="edit-3" class="w-4.5 h-4.5 text-brand-accent"></i>
+                                        Rangkuman & Catatan Belajar Pribadi
+                                    </h4>
+                                    <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1" id="saveNoteStatus">
+                                        <i data-lucide="check" class="w-3.5 h-3.5"></i> Auto-saved
+                                    </span>
+                                </div>
+                                <textarea id="lessonNotepad" placeholder="Tulis rangkuman penting, konsep trading, atau target evaluasi Anda dari video ini..." rows="4" class="w-full p-4 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white transition-all"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Right Column (Topic Track / Playlist List) -->
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
+                                <h4 class="text-xs font-black uppercase tracking-wider text-white mb-2">Playlist Modul Ini</h4>
+                                <div class="w-full bg-brand-bg rounded-full h-1.5 overflow-hidden mb-2">
+                                    <div id="playlistProgressTrack" class="bg-brand-accent h-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                                <span id="playlistProgressLabel" class="text-[10px] text-brand-textMuted font-bold">0 / 0 Selesai</span>
+                            </div>
+
+                            <!-- List Scroll -->
+                            <div id="playlistListScroll" class="space-y-1.5 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
+                                <!-- Populated programmatically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCREEN 3: CALCULATORS & TRADING TOOLS -->
+                <div id="screenCalculators" class="hidden space-y-6 max-w-5xl mx-auto py-2">
+                    <div class="text-center space-y-2 max-w-xl mx-auto mb-6">
+                        <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-brand-accentGlow text-[10px] font-bold uppercase tracking-wider">🛠️ Orion Trading Risk Engine</span>
+                        <h2 class="text-2xl font-black text-white">Kalkulator Portofolio & Manajemen Risiko</h2>
+                        <p class="text-brand-textMuted text-xs">Kelola alokasi dana secara sistematis demi kestabilan psikologis dan modal dalam jangka panjang.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Position Sizer -->
+                        <div class="p-5 md:p-6 rounded-2xl bg-brand-surface border border-brand-border space-y-4">
+                            <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-brand-border pb-3">
+                                <i data-lucide="shield-alert" class="w-5 h-5 text-brand-accent"></i>
+                                Position Sizing Calculator (R-Multiple)
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-300 mb-1">Total Modal Trading (Rupiah / USD)</label>
+                                    <input type="number" id="calcCapital" value="10000000" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-300 mb-1">Toleransi Risiko per Trade (%)</label>
+                                    <input type="number" id="calcRiskPct" value="1" step="0.5" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-300 mb-1">Harga Entry (Beli)</label>
+                                        <input type="number" id="calcEntry" value="5000" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-300 mb-1">Harga Stop Loss (SL)</label>
+                                        <input type="number" id="calcStopLoss" value="4800" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                    </div>
+                                </div>
+                                <button onclick="calculateRisk()" class="w-full py-2.5 bg-brand-accent hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition-all">
+                                    Hitung Parameter Ukuran Posisi
+                                </button>
+                                
+                                <div id="riskResultBox" class="p-3.5 rounded-xl bg-purple-950/20 border border-brand-accent/20 space-y-2.5 hidden">
+                                    <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Metrik Risiko:</p>
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        <div>Stop Loss %: <strong class="text-red-400 block" id="resSlPct">0%</strong></div>
+                                        <div>Maksimal Risiko Uang: <strong class="text-amber-400 block" id="resMaxLoss">Rp 0</strong></div>
+                                        <div class="col-span-2">Alokasi Beli (Position Size): <strong class="text-brand-success text-sm block" id="resAllocation">Rp 0</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compounding Growth Visualizer -->
+                        <div class="p-5 md:p-6 rounded-2xl bg-brand-surface border border-brand-border space-y-4">
+                            <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-brand-border pb-3">
+                                <i data-lucide-name="trending-up" class="w-5 h-5 text-brand-accent"></i>
+                                Compound Interest Growth Projector
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-300 mb-1">Modal Awal</label>
+                                    <input type="number" id="compoundPrincipal" value="5000000" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-300 mb-1">Return / Bulan (%)</label>
+                                        <input type="number" id="compoundRate" value="10" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-300 mb-1">Durasi (Bulan)</label>
+                                        <input type="number" id="compoundPeriods" value="12" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-300 mb-1">Tambahan Tabungan Bulanan (Opsional)</label>
+                                    <input type="number" id="compoundSavings" value="250000" class="w-full px-3.5 py-2.5 bg-brand-bg border border-brand-border rounded-xl text-xs focus:outline-none focus:border-brand-accent text-white">
+                                </div>
+                                <button onclick="calculateCompound()" class="w-full py-2.5 bg-brand-accent hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition-all">
+                                    Proyeksikan Kekayaan Bersih
+                                </button>
+                                
+                                <div id="compoundResultBox" class="p-3.5 rounded-xl bg-purple-950/20 border border-brand-accent/20 space-y-2.5 hidden">
+                                    <p class="text-[10px] text-brand-textMuted font-bold uppercase tracking-wider">Hasil Proyeksi Compound:</p>
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        <div>Setoran Sendiri: <strong class="text-gray-200 block" id="resCompContributed">Rp 0</strong></div>
+                                        <div>Akumulasi Bunga: <strong class="text-brand-accentGlow block" id="resCompInterest">Rp 0</strong></div>
+                                        <div class="col-span-2">Total Aset Masa Depan: <strong class="text-brand-success text-sm block" id="resCompTotal">Rp 0</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <script>
+        // Highly Structured E-course Modules Matrix
+        const ORION_ECOURSE_DATABASE = [
+            {
+                id: "class-1",
+                title: "Kelas Saham - Kelas 1",
+                badge: "Dasar & Fundamental",
+                desc: "Pengenalan instrumen dasar pasar modal, psikologi awal, dan kalkulator manajemen risiko.",
+                icon: "graduation-cap",
+                topics: [
+                    {
+                        category: "Pengantar & Fundamental Dasar",
+                        lessons: [
+                            { title: "1. Pengenalan Saham", url: "https://drive.google.com/file/d/1Bz-za5ZDdbqWq5bkjBYvlDFLAK2BTbTX/view?usp=drivesdk" },
+                            { title: "2. Mekanisme Dagang", url: "https://drive.google.com/file/d/1g3EFEJ1KI9s3vmqttL0HNPyh7BSwgGa4/view?usp=drivesdk" },
+                            { title: "3. Analisa Fundamental", url: "https://drive.google.com/file/d/1n8K_LmUfrE2GCXUIKEL5ufJmFVwhO262/view?usp=drivesdk" },
+                            { title: "4. Basic Teknikal", url: "https://drive.google.com/file/d/1-MXnxxfudrPcuJ_lz4h8Zj5pzPOiUoB1/view?usp=drivesdk" },
+                            { title: "5. Advanteg Trend Line", url: "https://drive.google.com/file/d/15gCrP0AWvJyksKSLOdoQ1Fe0ArqOhxOD/view?usp=drivesdk" },
+                            { title: "6. Market Phase", url: "https://drive.google.com/file/d/1qJm0CgARCSZMihl2k-DlmugXJqYQWy_i/view?usp=drivesdk" },
+                            { title: "7. Market Phase Vidio", url: "https://drive.google.com/file/d/1qd74lR-7GDT7r43ZOLf0x75Q3E6UVTmA/view?usp=drivesdk" },
+                            { title: "8. Candle Stick Pattern", url: "https://drive.google.com/file/d/1-paxRTfNx8mr3v-d3iA6qCto9ZmXdocQ/view?usp=drivesdk" },
+                            { title: "9. Ilmu Candle Stick", url: "https://drive.google.com/file/d/1KCp3g-eYYkUXWqT6A8v-5o9AyDn9v5qx/view?usp=drivesdk" },
+                            { title: "10. The STOCASTICK", url: "https://drive.google.com/file/d/1REqeO1L7B0KhKa9SF4bIghZ18Zh_53vI/view?usp=drivesdk" },
+                            { title: "11. How Use STOCASTICK", url: "https://drive.google.com/file/d/1GcyjbRGaGVI7AQ-3ZaXY2GaYNV9uoO8L/view?usp=drivesdk" },
+                            { title: "12. Principle Fibonaci", url: "https://drive.google.com/file/d/1MTUY-Et2Rmn9Hf3yAeK9AtEyWinDA7Ee/view?usp=drivesdk" },
+                            { title: "13. Pola Harmonick", url: "https://drive.google.com/file/d/1-sAVqDVk6xkx78A6Fo6L2oum4rz_NV16/view?usp=drivesdk" },
+                            { title: "14. Reversal Pattern", url: "https://drive.google.com/file/d/1b1RjB7SbKbScA_k3XsoeINrsE1LxCkE1/view?usp=drivesdk" },
+                            { title: "15. Dual Function Pattern", url: "https://drive.google.com/file/d/1PpcwFEKncwFFWXSdoD5ChTca3-TOt0Ah/view?usp=drivesdk" }
+                        ]
+                    },
+                    {
+                        category: "Money Management & Tools",
+                        lessons: [
+                            { title: "16. Money Management Sheet", url: "https://docs.google.com/spreadsheets/d/1kXw69FxmgKFQ2vYEMhL-QTWCsb6PnZYG/edit?usp=drivesdk&ouid=116932942215417508074&rtpof=true&sd=true" },
+                            { title: "17. Books Sesi 1 Sheet", url: "https://docs.google.com/spreadsheets/d/1mefmJ_h-5xqVlBK5ue5V3EJL2FbLrfkj/edit?usp=drivesdk&ouid=116932942215417508074&rtpof=true&sd=true" },
+                            { title: "18. Money Management Calculator Sheet", url: "https://docs.google.com/spreadsheets/d/1u1WgJuv4Htjn40yu-VLpw_90hav36aze/edit?usp=drivesdk&ouid=116932942215417508074&rtpof=true&sd=true" },
+                            { title: "19. Modul Money Management", url: "https://drive.google.com/file/d/1XiSX32ttfrc37XOG3mFzrMAuGbNXW2VG/view?usp=drivesdk" },
+                            { title: "20. Money Management for Trading", url: "https://drive.google.com/file/d/1NTBwT4sHLummr4FmddgRR0Rh0Rgwuz7C/view?usp=drivesdk" },
+                            { title: "21. Power Full Psychology", url: "https://drive.google.com/file/d/1yrTwbj4PMQAxoYwebCtSQBYUvUkPKtYb/view?usp=drivesdk" },
+                            { title: "22. Anomali Trading", url: "https://drive.google.com/file/d/1eXPmYbAgHRYqoa5bmggjUZjPGfrAxlnd/view?usp=drivesdk" },
+                            { title: "23. Trend dan Review Materi", url: "https://drive.google.com/file/d/1jOWnlg2qHEel7MiQLC1v2hfgqMwtSJsE/view?usp=drivesdk" },
+                            { title: "24. Industri Keuangan", url: "https://drive.google.com/file/d/1DFs4HLXkNE3YOS7QnJoJR6CU6aSxRx-1/view?usp=drivesdk" },
+                            { title: "25. Materi PDF Webinar", url: "https://drive.google.com/file/d/1ONIln4uXPY7RdROvS1sDmUqaBEK5CGp_/view?usp=drivesdk" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "financial-literacy-and-market",
+                title: "Financial Literacy & Market Mastery",
+                badge: "Wealth Blueprint",
+                desc: "Pembangunan fondasi kekayaan jangka panjang, evaluasi bias kognitif, dan analisis instrumen investasi.",
+                icon: "shield",
+                topics: [
+                    {
+                        category: "Financial Literacy",
+                        lessons: [
+                            { title: "1. Apa Itu Personal Finance", url: "https://drive.google.com/file/d/1M-CS0IRjU7YpX-0R7E87-XHGDePj-0Hw/view?usp=sharing" },
+                            { title: "1.1 Rich Mindset VS Poor Mindset", url: "https://drive.google.com/file/d/10LZjK4UX9KZT_A1rMkSxeXuwsy1yK7ss/view?usp=sharing" },
+                            { title: "1.2 Membuat Tujuan Keuangan", url: "https://drive.google.com/file/d/1m6oTu2jA8SPF972-BYsVJyFP6mHqkgqN/view?usp=drive_link" },
+                            { title: "1.3 Cara Membuat Anggaran Bulanan", url: "https://drive.google.com/file/d/1lNrtBxfW1zaW71n4hIIjyhLaHYqVQeZg/view?usp=sharing" },
+                            { title: "1.4 Cara Mengatur Gaji Secara Efektif", url: "https://drive.google.com/file/d/1d3knEzWMAiXSEvxNfusO2Gs2GLdminIB/view?usp=sharing" },
+                            { title: "1.5 Membongkar Kebocoran Keuangan", url: "https://drive.google.com/file/d/1eyS9WadH68SCYcrwW1lL1z3-xEw5KciQ/view?usp=drive_link" },
+                            { title: "1.6 Strategi Tingkatkan Penghasilan", url: "https://drive.google.com/file/d/1I1Ya0P2v0JnsY05psH6EqokRU78HRReR/view?usp=drive_link" },
+                            { title: "1.7 Memahami Utang Produktif VS Konsumtif", url: "https://drive.google.com/file/d/1ThBQ0zZNXfLm7nozAqg4iDny2v77qQZr/view?usp=drivesdk" },
+                            { title: "1.8 Kelola Kartu Kredit Secara Bijak", url: "https://drive.google.com/file/d/1yTmB5Q-uit9pVl7m-S2PTNyRNDayLp3g/view?usp=drivesdk" },
+                            { title: "1.9 Metode Snowball VS Metode Avalanche", url: "https://drive.google.com/file/d/17aytE75Ph9yS8fwQpLU-3SV-owIGW_-1/view?usp=drivesdk" },
+                            { title: "2.0 Bahaya Cicilan Dan Gaya Hidup Kredit", url: "https://drive.google.com/file/d/182OQZ2gaLDom0poSUrNJzJNVyrpWOApM/view?usp=drivesdk" },
+                            { title: "2.1 Cara Menentukan Dana Darurat", url: "https://drive.google.com/file/d/1EEgzvjxkt6eJJ-iq-ZDVYEPnOSse3-wb/view?usp=drive_link" },
+                            { title: "2.2 Dimana Menyimpan Dana Darurat", url: "https://drive.google.com/file/d/1WzIdfX7JQRO4iMSewl5rGTaOfZ0Zd9PO/view?usp=drive_link" },
+                            { title: "2.3 Kebiasaan Menabung", url: "https://drive.google.com/file/d/1cM4ZcknVIblSuFjjxeeCGMBhXczjyrwS/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Capital Market Mastery",
+                        lessons: [
+                            { title: "1. Fundamental Analysis 101", url: "https://drive.google.com/file/d/1hMSmLKve2bJpqW7UvcqSz_WQQAzMRf3D/view?usp=drive_link" },
+                            { title: "2. Mengenali Bisnis Hebat", url: "https://drive.google.com/file/d/1sup9cl_VVyIYLYy5QXKB68Vr6SrQQkNW/view?usp=drive_link" },
+                            { title: "3. Time is The Friend of The Wonderful Business", url: "https://drive.google.com/file/d/1wBikj-YcssG-jzN--SU2tORrunYGfmqr/view?usp=drive_link" },
+                            { title: "4. Mr. Market is Your Servant", url: "https://drive.google.com/file/d/1UVcbEUlYW9GZmZPRwElMxM9chySbvsHM/view?usp=drive_link" },
+                            { title: "5. Sektor dan Siklus", url: "https://drive.google.com/file/d/1n18Pv4zYg47fmsqtjJCDr9SmBIeK7FWY/view?usp=drive_link" },
+                            { title: "6. Diversifikasi VS Konsentrasi", url: "https://drive.google.com/file/d/1vc8a2KUL-R1uCiQFFNAkxwHO0L9EFBsG/view?usp=drive_link" },
+                            { title: "7. Saham Sebagai Instrumen Kekayaan", url: "https://drive.google.com/file/d/1ei3vZY-7i-9_OPVXOPiTluL9UhNPYUEC/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "The Wealth Blueprint",
+                        lessons: [
+                            { title: "1. Compound Interest, Keajaiban ke-8 Dunia", url: "https://drive.google.com/file/d/1tskMCiXBzYc2ymhHRCLO0VvTDjv7f_v4/view?usp=sharing" },
+                            { title: "2. Gaya Hidup Sederhana", url: "https://drive.google.com/file/d/1YV1L9V2IA8uu-niYDlW-MRj_JMceeORh/view?usp=drive_link" },
+                            { title: "3. Jangan Pernah Kehilangan Uang", url: "https://drive.google.com/file/d/1I0UQueTtqrEU_wS_XsoyFeHRaLLDNFLx/view?usp=drive_link" },
+                            { title: "4. Investasi Sebagai Bisnis", url: "https://drive.google.com/file/d/1f4aFM5F59oKTl2-nECylyAgoD2nKBf2d/view?usp=drive_link" },
+                            { title: "5. Strategi Kekayaan Jangka Panjang", url: "https://drive.google.com/file/d/13rQ22r--oABxhMPFEKTemDsGDBS6cfRR/view?usp=drive_link" },
+                            { title: "6. Avoiding Stupidity", url: "https://drive.google.com/file/d/1LTpnIlXstEQc2flB3D2hFb9vRh3y8T5X/view?usp=drive_link" },
+                            { title: "7. Berinvestasi Untuk Legacy", url: "https://drive.google.com/file/d/1ZEXqjZzXT30VFZJQtQ6SyzCYY1UJIRkM/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "The Investor Mind",
+                        lessons: [
+                            { title: "1. Prinsip Pertama Integritas dan Kesabaran", url: "https://drive.google.com/file/d/1vR0diVQlqzVrHr9Rb3FaWmAl-ZolVNfJ/view?usp=drive_link" },
+                            { title: "2. Circle of Competence", url: "https://drive.google.com/file/d/1CJPWQMmoACU5H3c1gYW7vl2rKxNzKYUC/view?usp=drive_link" },
+                            { title: "3. The Psychology Money", url: "https://drive.google.com/file/d/1YDcq6O5vMpvlVYydUF--dl88c9jLESgq/view?usp=drive_link" },
+                            { title: "4. Mental Models 101", url: "https://drive.google.com/file/d/1EYc2p-ZQKFbXRa-v2kKWyZ4FNM55qP_h/view?usp=drive_link" },
+                            { title: "5. Value VS Price", url: "https://drive.google.com/file/d/1pmne8q2a4tZETSSB9fIO5aPA_R7K3NK6/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Behavioral Finance",
+                        lessons: [
+                            { title: "1. Cognitive Bias", url: "https://drive.google.com/file/d/1jf1x_LztW7sINuahAVm5LGTZ2lrA8e9x/view?usp=drive_link" },
+                            { title: "2. Market Herding & History of Bubbles", url: "https://drive.google.com/file/d/1dBMWZVrZrHmc2QGxTayTvlCmOSBQ3Np_/view?usp=drive_link" },
+                            { title: "3. Emotional Discipline", url: "https://drive.google.com/file/d/1ViOH5gXgbZ9je83qyzRwjxtNoleMYivO/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Principles of Investing",
+                        lessons: [
+                            { title: "1. Time Value of Money", url: "https://drive.google.com/file/d/1D7PqFng-epX7Th5-SoO2wierIn-QKYFF/view?usp=drive_link" },
+                            { title: "2. Risk VS Return", url: "https://drive.google.com/file/d/1jABZ120aSKaPdBtfTMV9bPuyeXCuZPB2/view?usp=drive_link" },
+                            { title: "3. Asset Classes", url: "https://drive.google.com/file/d/1dkmhe95jGvcyGm2Y_MBWOVyl34qHTD_W/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Financial Accounting",
+                        lessons: [
+                            { title: "1. Rasio Finansial", url: "https://drive.google.com/file/d/1Pkdl6bNn4ZVaoUH7aZPJIx8Sa6ZIHfBg/view?usp=drive_link" },
+                            { title: "2. Accounting Red Flags", url: "https://drive.google.com/file/d/1bt1g-Cs7KSaM_WTbehJMnGK3OB0l6TfH/view?usp=drive_link" },
+                            { title: "3. Menghitung Discounted Cash Flow", url: "https://drive.google.com/file/d/1V5TglDt3lB2cQopXr6vgc0SHA4vMpjwq/view?usp=drive_link" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-2",
+                title: "Materi Saham - Kelas 2",
+                badge: "Advanced Analysis",
+                desc: "Bandarmology lanjut, money flow mastery, advanced swing trading patterns, dan studi kasus akumulasi broker.",
+                icon: "trending-up",
+                topics: [
+                    {
+                        category: "Personal Finance & Wealth Structuring",
+                        lessons: [
+                            { title: "Wealth Structuring 1", url: "https://drive.google.com/file/d/1TYMd4EwvcCQ0oYTZuJd4UA63lC0Of5cv/view?usp=drive_link" },
+                            { title: "Wealth Structuring 2", url: "https://drive.google.com/file/d/1vGkzIatB_l1Hv6gPU4Qv4G4ZBTW34u8U/view?usp=drive_link" },
+                            { title: "Wealth Structuring 3", url: "https://drive.google.com/file/d/1PZioiQYW_nvvkJvshPIjfhBASi6HFrae/view?usp=drive_link" },
+                            { title: "Wealth Structuring 4", url: "https://drive.google.com/file/d/18rjbAB7Gpj4W_V2yJpoYuTl9_QZTsSK2/view?usp=drive_link" },
+                            { title: "Wealth Structuring 5", url: "https://drive.google.com/file/d/1RSAcN8eTyp4Vyc8XV_aI8YfN5Pqsy1dT/view?usp=drive_link" },
+                            { title: "Wealth Structuring 6", url: "https://drive.google.com/file/d/1xSqNngh-ovtzgV8LJwwWUePlaEVSd5u5/view?usp=drive_link" },
+                            { title: "Wealth Structuring 7", url: "https://drive.google.com/file/d/1Ama_wXnzYfSMy2HJcLPhB7dhf_zFElhy/view?usp=drive_link" },
+                            { title: "Wealth Structuring 8", url: "https://drive.google.com/file/d/1R8c-B2w1wExrzs3jzcMrjs9RzbhoTAhU/view?usp=drive_link" },
+                            { title: "Wealth Structuring 9", url: "https://drive.google.com/file/d/1QvXY0ZKmITZGUGjPLuCCz2S6ga7bfTgd/view?usp=drive_link" },
+                            { title: "Wealth Structuring 10", url: "https://drive.google.com/file/d/1phqYApYpp31JBC9tgWTxCsDIxT1t09x8/view?usp=drive_link" },
+                            { title: "Wealth Structuring 11", url: "https://drive.google.com/file/d/1kLK8IbC-eP513j-HtJfEouGxdYEh_EyZ/view?usp=drive_link" },
+                            { title: "Wealth Structuring 12", url: "https://drive.google.com/file/d/194VBqLVSnSJ9JHQ8w1pyQ7xo-67GVZLj/view?usp=drive_link" },
+                            { title: "Wealth Structuring 13", url: "https://drive.google.com/file/d/192shkr1ozYNDprfpe7b8JJJ7RRTN5_n2/view?usp=drive_link" },
+                            { title: "Wealth Structuring 14", url: "https://drive.google.com/file/d/18DhRUzFJfNwhxeY7RMfYXSKRwEIPNoRB/view?usp=drive_link" },
+                            { title: "Wealth Structuring 15", url: "https://drive.google.com/file/d/1VG8CambqgFwIwC6uy7VQbeg3Pf-qo3eP/view?usp=drive_link" },
+                            { title: "Wealth Structuring 16", url: "https://drive.google.com/file/d/19oXa11GrS7YY_qZtRJilNC10CRHkEFd1/view?usp=drive_link" },
+                            { title: "Wealth Structuring 17", url: "https://drive.google.com/file/d/1wLNWLEaP2etRld-azEOd62pBEnn94aKP/view?usp=drive_link" },
+                            { title: "Wealth Structuring 18", url: "https://drive.google.com/file/d/1czTe2SKTcA35GRk60MUG7WwRV82fh8e7/view?usp=drive_link" },
+                            { title: "Wealth Structuring 19", url: "https://drive.google.com/file/d/1wxHxz_Fad49_IfsVwSeYF-DNA0JOUn8A/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Money Flow Mastery",
+                        lessons: [
+                            { title: "Understanding Money Flow 1", url: "https://drive.google.com/file/d/1g3Fx73m3i9l7KDPat1TKpybuEaE7vzed/view?usp=drive_link" },
+                            { title: "Understanding Money Flow 2", url: "https://drive.google.com/file/d/1yyWbQ-90GRBes6INm-KMwufISIKl6b-F/view?usp=drive_link" },
+                            { title: "Understanding Money Flow 3", url: "https://drive.google.com/file/d/1yGPMB8Ywj_Pwkatfsz6aFcqdXp9dYMsv/view?usp=drive_link" },
+                            { title: "Introduction Bandarmology 1", url: "https://drive.google.com/file/d/1MbbB3V8KoqV7W8q6rjEVFSTw_6A0_vup/view?usp=drive_link" },
+                            { title: "Introduction Bandarmology 2", url: "https://drive.google.com/file/d/1_TC3i_WQyCWMzi5SPJJ2z51NsJ6mYerN/view?usp=drive_link" },
+                            { title: "Introduction Bandarmology 3", url: "https://drive.google.com/file/d/17hweCNPlvZl09NSPNWBV7m01ZyfBIDLW/view?usp=drive_link" },
+                            { title: "Introduction Bandarmology 4", url: "https://drive.google.com/file/d/1ChyWkwhmnY0IFQivt5AuT_yF5mbaW3aq/view?usp=drive_link" },
+                            { title: "Introduction Bandarmology 5", url: "https://drive.google.com/file/d/1CEkpTnOv8ak-Tc03qgxRqln4SXbyG-Bm/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 1", url: "https://drive.google.com/file/d/1khFT9bvhaUirS8T0TM-XlVj_6CAihVyS/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 2", url: "https://drive.google.com/file/d/1-jS52h3R2s-d2Cp1kHdIGSTPgj7KUyRU/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 3", url: "https://drive.google.com/file/d/1OfkI_PEoECHXZxONQO9TWmJY4VcqYHxS/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 4", url: "https://drive.google.com/file/d/13uA7FTEG50gQebfoFOPa1PqgpU6fbgAO/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 5", url: "https://drive.google.com/file/d/19_gGkcZA14yJ4QtmEBeuk4C3jqg4YnjY/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 6", url: "https://drive.google.com/file/d/1SquysfFxF5fFAh9ERjuhDoCRGtjhUfzG/view?usp=drive_link" },
+                            { title: "Bandarmology Analisis 7", url: "https://drive.google.com/file/d/1ruNhqKGIlcesUdnoapyIYuHD3iLmfwJ1/view?usp=drive_link" },
+                            { title: "Broker Summary Study Case", url: "https://drive.google.com/file/d/1odTKaidzxTEngkyll7fG1oAUTE2nfstd/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Advanced Swing Trading",
+                        lessons: [
+                            { title: "Intro Swing Stock Markets 1", url: "https://drive.google.com/file/d/1PHq66dOakmH1Yc5AL72VVWu67wffietT/view?usp=drive_link" },
+                            { title: "Intro Swing Stock Markets 2", url: "https://drive.google.com/file/d/1cBP6WMJ6zDlfYeiXt6Y0xEWfjd3-ZM6f/view?usp=drive_link" },
+                            { title: "Intro Swing Stock Markets 3", url: "https://drive.google.com/file/d/1CQNNRxAHO0fmGTxc8I3rofYcarBWOu_I/view?usp=drive_link" },
+                            { title: "Prep Profitable Trader 1", url: "https://drive.google.com/file/d/1udttN7j_tfOQRJWWUO3ApHtt2geAEW1M/view?usp=drive_link" },
+                            { title: "Prep Profitable Trader 2", url: "https://drive.google.com/file/d/1EURj1o9aIaI1zhf3lJCRBYorFWnjFtmY/view?usp=drive_link" },
+                            { title: "Prep Profitable Trader 3", url: "https://drive.google.com/file/d/1beJKhZET-WYNVsCkcP9b3Dm4MEEAkE_I/view?usp=drive_link" },
+                            { title: "Prep Profitable Trader 4", url: "https://drive.google.com/file/d/1PD5Gd3rxs1wfr3-LcgECcXPjs9C1RaFY/view?usp=drive_link" },
+                            { title: "Prep Profitable Trader 5", url: "https://drive.google.com/file/d/1zjFPfQu3NNa3gl2lyRS6Ktjj1gAyOCpp/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 1", url: "https://drive.google.com/file/d/11FAebHuJN33liKpMHgbOdHv3mXvU75Xl/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 2", url: "https://drive.google.com/file/d/1ur2657JFSv7h-yqzujmYWeUU5J7T2E8d/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 3", url: "https://drive.google.com/file/d/1RSF9S89Marzlz1P_FeDXNFD5lrTS50Vz/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 4", url: "https://drive.google.com/file/d/1HCd3Qtid_ghSLbsn57V6gk0qRzd8xgIr/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 5", url: "https://drive.google.com/file/d/1plLXCrYMXCrVHJKG5toFzp0DfjkUTLwt/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 6", url: "https://drive.google.com/file/d/1hHsaaSyKfmH63lNMuXIg5jpG_sbbIL4q/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 7", url: "https://drive.google.com/file/d/1uB1QkB5gYRFuY88bhM6TWX81KhHMf4fY/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 8", url: "https://drive.google.com/file/d/1rP-QcwYoN2uYWGuKYW0PqHhTl6xXf2dy/view?usp=drive_link" },
+                            { title: "Fundamental Teknikal 9", url: "https://drive.google.com/file/d/19dzT419WpDgKX4CIjpS4mSXeSlGZf-DR/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 1", url: "https://drive.google.com/file/d/1yry8cbeJTlsE1MnvtfgH2K3NTsoEnDj6/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 2", url: "https://drive.google.com/file/d/1hIUEPPHPqPI4cVB0Dm4mTZ_cC20SWhY2/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 3", url: "https://drive.google.com/file/d/10eDEPM5RWpOks8QPI4sk13B-9sJ0vkXP/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 4", url: "https://drive.google.com/file/d/1nJTMSNGY8QvuqPo_OJDSVgmZ72ER7J2S/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 5", url: "https://drive.google.com/file/d/1nl4lCEscQPhJ4Iqb6o5MC94ynlM69tFF/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 6", url: "https://drive.google.com/file/d/1gIsHYTZxZz14zveyj4bC1T4679kKEPoi/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 7", url: "https://drive.google.com/file/d/1eYhZ47iknDbmDPxWz8ObhMVrc78ek0on/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 8", url: "https://drive.google.com/file/d/1ncbo5OlKtFkE-iMIChiMy-dPeVUVOPro/view?usp=drive_link" },
+                            { title: "Advanced Teknikal 9", url: "https://drive.google.com/file/d/1eLwOj31XWnXOs1QsA-lIxnXMsYgB7T_X/view?usp=drive_link" },
+                            { title: "Risk & Money Management 1", url: "https://drive.google.com/file/d/1OEp2usKReW29waGYEybNOI8ADkSfY1Lp/view?usp=drive_link" },
+                            { title: "Risk & Money Management 2", url: "https://drive.google.com/file/d/1q_cIbBucX0WuOy1Ihz8uvSu3JYUPUu_q/view?usp=drive_link" },
+                            { title: "Risk & Money Management 3", url: "https://drive.google.com/file/d/18w0SvCh0Je7MVwfwMdKE8gk2-v4Pl021/view?usp=drive_link" },
+                            { title: "Swing Study Case", url: "https://drive.google.com/file/d/1fxzXog7k_pWu9axGJA0RWXLmD1sXJWQ2/view?usp=drive_link" },
+                            { title: "Finalizing Swing Trading Blueprint", url: "https://drive.google.com/file/d/1z2i42XEmqcLvHCXs68SVlisvyxBNx4-1/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Investing with Purpose",
+                        lessons: [
+                            { title: "IWP Introduction 1", url: "https://drive.google.com/file/d/1qqmijY40qmo9brwmCbkbBRZRDsOASzuG/view?usp=drive_link" },
+                            { title: "IWP Introduction 2", url: "https://drive.google.com/file/d/1kVstVNoCMhOXedrqVlrT7KRjzs5GPP13/view?usp=drive_link" },
+                            { title: "IWP Introduction 3", url: "https://drive.google.com/file/d/1YtWrBRVi79OZHmIa_spevyO3JX3_Flfq/view?usp=drive_link" },
+                            { title: "IWP Introduction 4", url: "https://drive.google.com/file/d/1UyC-OjGTZmWOx6MulgN82IAJrA8b7pcL/view?usp=drive_link" },
+                            { title: "IWP Introduction 5", url: "https://drive.google.com/file/d/16pxRa7Ucx2V7kvoq9JXJ8AvqmOPjAghr/view?usp=drive_link" },
+                            { title: "IWP Introduction 6", url: "https://drive.google.com/file/d/1QuKYB5ycwTfi25Ro2-W0k9qBU03w6lGq/view?usp=drive_link" },
+                            { title: "IWP Introduction 7", url: "https://drive.google.com/file/d/1a_v-aq2cegPUK7QGT_kqzn_PyHj3J8km/view?usp=drive_link" },
+                            { title: "Becoming A Stock 1", url: "https://drive.google.com/file/d/1Burs9Tza5HfKnJo_eym9fdYJ5E1rcGkB/view?usp=drive_link" },
+                            { title: "Becoming A Stock 2", url: "https://drive.google.com/file/d/1zqkxGKwfY9vl4o9rpkoyjihKHnl1FTYz/view?usp=drive_link" },
+                            { title: "Becoming A Stock 3", url: "https://drive.google.com/file/d/1B7A-I249ZwueOcr66saiUCAF834_vKib/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 1", url: "https://drive.google.com/file/d/1jxBzr7X4vu9T9-xQNM_QSDpEoI0cgtzP/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 2", url: "https://drive.google.com/file/d/12MzcdfSyYca0gKXZSpUBh1ia-HHnbBmM/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 3", url: "https://drive.google.com/file/d/1ed5jllPbgVTe9kIeh6KpenbeSjpi80yZ/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 4", url: "https://drive.google.com/file/d/1BCih0_sh5fYS9PYpa9uWJDMnjKPlRY1l/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 5", url: "https://drive.google.com/file/d/1Ja1oxfNlgndHewDssAHCOY5bxZBOcVdc/view?usp=drive_link" },
+                            { title: "Analyze Valuate Invest 6", url: "https://drive.google.com/file/d/1-BNOQEXjyZxeBbs-NV9XOfyunRV2f9Fu/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Swing Trading & Money Flow Advance (Part 1 & 2)",
+                        lessons: [
+                            { title: "Swing Trading Part 1", url: "https://drive.google.com/file/d/1qT_-Kh_q86lmq3QtTlIqd3JH2G9bBPC9/view?usp=drive_link" },
+                            { title: "Swing Trading Part 2", url: "https://drive.google.com/file/d/1Xyeo7AO5zoHdcOFuV8PY4apy-wiL2rQC/view?usp=drive_link" },
+                            { title: "Moneyflow Mastery Advance", url: "https://drive.google.com/file/d/14q2fyzKi2XrsG7r6A0HEvDE-byVVt9Pe/view?usp=drive_link" },
+                            { title: "Swing Trading Advance", url: "https://drive.google.com/file/d/1BmZe0sBs1YCn8aq4sVi-7334wxwPIk-T/view?usp=drive_link" },
+                            { title: "Money Flow Mastery Pro", url: "https://drive.google.com/file/d/1yPcPwQV3N3kd2uZOBBy7PZXr_GpdoC3R/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Swing Trading Dec Batch & Global Diversification",
+                        lessons: [
+                            { title: "Swing Trading Batch Desember", url: "https://drive.google.com/file/d/1mAr-euOajCxxfWch3q5VNtwEpnGysP94/view?usp=drive_link" },
+                            { title: "Moneyflow Batch Desember", url: "https://drive.google.com/file/d/1DSsAMNIMiZIqu61bH8s9c-9kM1NMlx-R/view?usp=drive_link" },
+                            { title: "Global Diversifications: US Stock & Crypto Probability", url: "https://drive.google.com/file/d/1ODbggSgLp9w19TaOtFtonVKa6VPnoKxa/view?usp=drive_link" },
+                            { title: "Introductions to Forex Market", url: "https://drive.google.com/file/d/1HsqDZS7wOImDT_1AffgmC_X6ngBqx1xf/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Materi Webinar Speakers",
+                        lessons: [
+                            { title: "Webinar Speaker Session 1", url: "https://drive.google.com/file/d/1ouG-EffDxk_kPpX-DBy-6iYQ-j2aeO8Q/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 2", url: "https://drive.google.com/file/d/1vFc8aT_VxSEskbq46-vLjTsCjqNwG4OT/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 3", url: "https://drive.google.com/file/d/1VQTiqsCvvw2aERWHfJMPDLLENw3Mo-FK/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 4", url: "https://drive.google.com/file/d/1l-D9kNfItHJSG2Lj2QZ7m3tee72fOCKt/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 5", url: "https://drive.google.com/file/d/1HeVocPaijKs2ck0cefkrsEMcCpUsf0AC/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 6", url: "https://drive.google.com/file/d/1TCDIwDWP6PE5fi50JrnM_i3bGvvFMk-Z/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 7", url: "https://drive.google.com/file/d/1jpuBJ7RlBaVQweXy1zzM8tTvuhMV9cfj/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 8", url: "https://drive.google.com/file/d/1QS-8DMDhW9Xs2GfEt9jiC5m5UGUCk3ei/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 9", url: "https://drive.google.com/file/d/1_GibtZjff-NqbOlc3pbUhALjiCvviTFZ/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 10", url: "https://drive.google.com/file/d/1c6ZsZQhv8Rt13kbgiJZS_0YO77xVEKr0/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 11", url: "https://drive.google.com/file/d/14UTx6nVASjt9_ys3XwsGnj4GFrv37TOF/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 12", url: "https://drive.google.com/file/d/1dSNFCwu38LcaeQS-I6_ikDZIKFOwMcK2/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 13", url: "https://drive.google.com/file/d/1aLd-K5fYizAsxUgE3OSoS6j1Y0rEQns6/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 14", url: "https://drive.google.com/file/d/1FxssU19VV0Q56Iy_JDCpyn6FsrFr645r/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 15", url: "https://drive.google.com/file/d/1e_FZUmt_ral0HD3OXtgDEfvAF0CnJ51G/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 16", url: "https://drive.google.com/file/d/1yyCq9i4AdRLH-mWFS-slob7byscnQvRZ/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 17", url: "https://drive.google.com/file/d/13SLp6E_yheSPyTPtAihuPiWteEup00M0/view?usp=drive_link" },
+                            { title: "Webinar Speaker Session 18", url: "https://drive.google.com/file/d/1oVihBdznGwYcnuWPd9p3yq3QbDSOT7Ja/view?usp=drive_link" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-3",
+                title: "Materi Saham - Kelas 3",
+                badge: "Macro & Pro Valuation",
+                desc: "Siklus makroekonomi global, pembacaan mendalam laporan keuangan perbankan, properti, dan valuasi pro.",
+                icon: "bar-chart-2",
+                topics: [
+                    {
+                        category: "Makroekonomi & Ilmu Fundamental Pro",
+                        lessons: [
+                            { title: "1. Makroekonomi", url: "https://drive.google.com/file/d/1b5UVvqybix5Ykqr6xnXriOSoHqgq83Mv/view?usp=drive_link" },
+                            { title: "2. Value Investing", url: "https://drive.google.com/file/d/1MmVBRdr3rVW5zgfrtt1557JoufIhsBJ1/view?usp=drive_link" },
+                            { title: "3. Membaca Laporan Keuangan", url: "https://drive.google.com/file/d/1r7lThU1YPXv8KgOKjUjunEerdZEjkJZY/view?usp=drive_link" },
+                            { title: "4. Analisis Keuangan Perbankan", url: "https://drive.google.com/file/d/1b3hmK5dFrW7-5UXNT7GWTUbZkEaeHekt/view?usp=drive_link" },
+                            { title: "5. Laporan Keuangan Properti", url: "https://drive.google.com/file/d/1lPESEHNEFK6t46fAxLvvc0lpRuSXE5wU/view?usp=drive_link" },
+                            { title: "6. Menganalisis Evaluasi Saham", url: "https://drive.google.com/file/d/1BxnPRNo2zw07S0GUMCqUX7yMggnuPZQn/view?usp=drive_link" },
+                            { title: "7. Penerapan Ilmu Fundamental", url: "https://drive.google.com/file/d/1_waV8WID5Sj3rOFtbW1_awXmMqNctXKh/view?usp=drive_link" },
+                            { title: "8. Konklusi", url: "https://drive.google.com/file/d/1IHMTthDwFXG8CALLVv-6Ck3vGQa-o64g/view?usp=drive_link" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-4",
+                title: "Materi Saham - Kelas 4",
+                badge: "Elite Masterclass",
+                desc: "Kombinasi transactional analysis tingkat lanjut, reinkarnasi psikologis, dan pencarian moonstock.",
+                icon: "gem",
+                topics: [
+                    {
+                        category: "Saham Beginners to Intermediate",
+                        lessons: [
+                            { title: "1. Reinkarnasi Di Dunia Saham", url: "https://drive.google.com/file/d/1Y5g9nqz_ZOH76xS-MoYtP3uDnsU9wutF/view?usp=drive_link" },
+                            { title: "2. Basic Teknikal Analisis", url: "https://drive.google.com/file/d/1WnrqOFiMs9R5b-jPFJwMHwd_YshensDQ/view?usp=drive_link" },
+                            { title: "3. Mastering Transactional Analisis 1", url: "https://drive.google.com/file/d/1MHl6bVqawzGfrT6zUD5I8lFZ-TjLcSOg/view?usp=drive_link" },
+                            { title: "4. Mastering Transactional Analisis 2", url: "https://drive.google.com/file/d/1L0gpxbOR3KRy-UMOe9hpxQ6jErfATS8s/view?usp=drive_link" },
+                            { title: "5. Finding The Moonstock Matrix", url: "https://drive.google.com/file/d/1d3Y5Wqne7nTZYQmA38GTBUHl6GADXzcN/view?usp=drive_link" }
+                        ]
+                    },
+                    {
+                        category: "Saham to Advanced Elite",
+                        lessons: [
+                            { title: "Trade Batch 1", url: "https://drive.google.com/file/d/1mQ6HYf9I-dnW-0IVexLzzhnSS83713FU/view?usp=drive_link" },
+                            { title: "Trade Batch 2", url: "https://drive.google.com/file/d/18vgqzFvzmv8ZdDo83CAtkV0CrtLfhgr1/view?usp=drive_link" },
+                            { title: "Trade Batch 3", url: "https://drive.google.com/file/d/1tgm9ZsbpHCIe7xI0YD-Ad4Bwa2G2yKln/view?usp=drive_link" },
+                            { title: "Trade Batch 4", url: "https://drive.google.com/file/d/1ZckAhaI4SasxYY8TL4jviVhgUvFKZxHE/view?usp=drive_link" },
+                            { title: "Trade Batch 5", url: "https://drive.google.com/file/d/1BvhXjpOAZA9T5CPi1_dZA_C7unm2Ahqj/view?usp=drive_link" },
+                            { title: "Trade Class 1", url: "https://drive.google.com/file/d/1gSfdmYL2l-rux7yl4_chup6bsMBW-P86/view?usp=drive_link" },
+                            { title: "Trade Class 2", url: "https://drive.google.com/file/d/1y12VmMCBRKRkG1Kllc2v9u4cdg0HvOUo/view?usp=drive_link" },
+                            { title: "Trade Class 3", url: "https://drive.google.com/file/d/1F3evbMaQXMEWoTG6XkWpTTN51Olo_v0D/view?usp=drive_link" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "live-sessions",
+                title: "Live Sessions & Special Webinars",
+                badge: "Interactive Sessions",
+                desc: "Rekaman diskusi interaktif langsung berkala, bedah portofolio anggota, dan riset pasar real-time.",
+                icon: "video",
+                topics: [
+                    {
+                        category: "Live Sessions Track",
+                        lessons: [
+                            { title: "Live Session 1", url: "https://drive.google.com/file/d/1ro_I6yD1LJrdO-W8Ehd1KtKJjJiTBZw_/view?usp=drive_link" },
+                            { title: "Live Session 2", url: "https://drive.google.com/file/d/1z8b-YLQiDCSlry3mX2hyI0-aEbnxfZf6/view?usp=drive_link" },
+                            { title: "Live Session 3", url: "https://drive.google.com/file/d/18CufqsgdNe55hY9Nf6CCeNRNFRxxCxs5/view?usp=drive_link" },
+                            { title: "Live Session 4", url: "https://drive.google.com/file/d/1eduYUyYQYRJef7VnmKIADSxq_6oHw7Y5/view?usp=drive_link" },
+                            { title: "Live Session 5", url: "https://drive.google.com/file/d/1dXAqnmyRrwKk_7DWd-D2D4b6ZTROuXSm/view?usp=drive_link" },
+                            { title: "Live Session 6", url: "https://drive.google.com/file/d/1i98wWIRLinsS4Bblfm-64bITUozlI4A0/view?usp=drive_link" },
+                            { title: "Live Session 7", url: "https://drive.google.com/file/d/1bT7NlXYIJKABsryjq5pYQN2jHFHgsY91/view?usp=drive_link" },
+                            { title: "Live Session 8", url: "https://drive.google.com/file/d/141POi-LmHzx8hmGOO1lOKlIQcETAawcr/view?usp=drive_link" },
+                            { title: "Live Session 9", url: "https://drive.google.com/file/d/10Nw0lj8OqPOdk-E3CcR7VeRPfnbgBAY0/view?usp=drive_link" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let activeClassId = null;
+        let activeLessonIdxInPlaylist = -1;
+        let currentPlaylistArray = []; 
+        let noteStorageMap = JSON.parse(localStorage.getItem('orion_v2_notes') || '{}');
+        let completedLessonsArray = JSON.parse(localStorage.getItem('orion_v2_completed') || '[]');
+
+        window.onload = function() {
+            lucide.createIcons();
+            renderSidebarStructure();
+            renderDashboardCards();
+            refreshGlobalLearningMetrics();
+            switchScreen('dashboard');
+        };
+
+        // Standardized converter for embedding Google Drive videos & spreadsheets
+        function getSafeViewerEmbedUrl(rawUrl) {
+            if (!rawUrl) return "";
+            if (rawUrl.includes("spreadsheets")) {
+                // Returns clean Google Sheet editor view
+                return rawUrl;
+            }
+            try {
+                const matches = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                if (matches && matches[1]) {
+                    return `https://drive.google.com/file/d/${matches[1]}/preview`;
+                }
+            } catch (err) {
+                console.error("Url Converter Error: ", err);
+            }
+            return rawUrl;
+        }
+
+        function renderSidebarStructure() {
+            const container = document.getElementById('sidebarMenuContainer');
+            container.innerHTML = "";
+
+            ORION_ECOURSE_DATABASE.forEach(classItem => {
+                const totalLessons = getLessonCountInClass(classItem);
+                const completedCount = getCompletedCountInClass(classItem.id);
+
+                const itemHtml = `
+                    <div class="rounded-xl border border-brand-border bg-brand-surface/20 overflow-hidden transition-all duration-300" id="accordion-wrap-${classItem.id}">
+                        <button onclick="toggleSidebarAccordion('${classItem.id}')" class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-brand-surface/40 transition-colors">
+                            <div class="flex items-center gap-2.5 truncate">
+                                <div class="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center text-brand-accentGlow">
+                                    <i data-lucide="${classItem.icon || 'book-open'}" class="w-4.5 h-4.5"></i>
+                                </div>
+                                <div class="truncate">
+                                    <h4 class="text-xs font-extrabold text-gray-200 truncate pr-2">${classItem.title}</h4>
+                                    <span class="text-[9px] text-brand-textMuted font-bold uppercase tracking-wider">${completedCount} / ${totalLessons} Selesai</span>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-brand-textMuted transition-transform duration-300" id="chevron-arrow-${classItem.id}"></i>
+                        </button>
+                        
+                        <!-- Inner Container List -->
+                        <div id="accordion-list-${classItem.id}" class="hidden bg-brand-bg/40 border-t border-brand-border/40 px-2.5 py-2 space-y-3">
+                            ${classItem.topics.map((topic, topicIdx) => `
+                                <div class="space-y-1">
+                                    <span class="text-[8px] uppercase tracking-widest text-brand-accent/80 font-black px-2 block truncate">${topic.category}</span>
+                                    <div class="space-y-0.5">
+                                        ${topic.lessons.map((lesson, lessonIdx) => {
+                                            const uniqueId = `${classItem.id}-${topicIdx}-${lessonIdx}`;
+                                            const isDone = completedLessonsArray.includes(uniqueId);
+                                            const isDoc = lesson.url.includes("spreadsheets") || lesson.title.toLowerCase().includes("sheet") || lesson.title.toLowerCase().includes("pdf");
+                                            return `
+                                                <button onclick="triggerLoadLesson('${classItem.id}', ${topicIdx}, ${lessonIdx})" id="sidebar-btn-${uniqueId}" class="w-full text-left py-1.5 px-2 rounded-lg text-[11px] font-medium flex items-center justify-between transition-all hover:bg-brand-surface text-gray-400 hover:text-white group">
+                                                    <span class="truncate pr-2 flex items-center gap-1.5">
+                                                        <i data-lucide="${isDone ? 'check-circle-2' : (isDoc ? 'file-spreadsheet' : 'play-circle')}" class="w-3.5 h-3.5 shrink-0 ${isDone ? 'text-brand-success' : 'text-gray-500 group-hover:text-brand-accentGlow'}"></i>
+                                                        <span class="truncate">${lesson.title}</span>
+                                                    </span>
+                                                    <i data-lucide="chevron-right" class="w-3 h-3 text-brand-accent opacity-0 group-hover:opacity-100 transition-all"></i>
+                                                </button>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHtml);
+            });
+            lucide.createIcons();
+        }
+
+        function renderDashboardCards() {
+            const grid = document.getElementById('dashboardGridClasses');
+            grid.innerHTML = "";
+
+            ORION_ECOURSE_DATABASE.forEach(classObj => {
+                const total = getLessonCountInClass(classObj);
+                const completed = getCompletedCountInClass(classObj.id);
+                const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                const cardHtml = `
+                    <div class="p-5 rounded-2xl bg-brand-surface border border-brand-border flex flex-col justify-between space-y-4 card-hover-effect">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <div class="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accentGlow shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                                    <i data-lucide="${classObj.icon}"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-brand-border text-[8px] font-black tracking-widest text-brand-accentGlow uppercase">${classObj.badge}</span>
+                            </div>
+                            <h4 class="text-sm font-black text-white leading-snug">${classObj.title}</h4>
+                            <p class="text-[11px] text-brand-textMuted leading-relaxed">${classObj.desc}</p>
+                        </div>
+                        
+                        <!-- Progress Indicator -->
+                        <div class="space-y-2 pt-2 border-t border-brand-border/40">
+                            <div class="flex justify-between items-center text-[10px] font-bold">
+                                <span class="text-brand-textMuted">${completed} / ${total} Selesai</span>
+                                <span class="text-brand-accentGlow">${pct}%</span>
+                            </div>
+                            <div class="w-full bg-brand-bg rounded-full h-1 overflow-hidden">
+                                <div class="bg-gradient-to-r from-brand-accent to-pink-500 h-full transition-all duration-300" style="width: ${pct}%"></div>
+                            </div>
+                            <button onclick="triggerOpenClassFirstLesson('${classObj.id}')" class="w-full mt-1.5 py-2 bg-brand-card hover:bg-brand-accent hover:text-white border border-brand-border rounded-xl text-xs font-bold text-gray-200 transition-all flex items-center justify-center gap-1">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Mulai Belajar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+            lucide.createIcons();
+        }
+
+        function triggerLoadLesson(classId, topicIdx, lessonIdx) {
+            const classObj = ORION_ECOURSE_DATABASE.find(c => c.id === classId);
+            if (!classObj) return;
+
+            const targetTopic = classObj.topics[topicIdx];
+            const targetLesson = targetTopic.lessons[lessonIdx];
+
+            // Auto switch viewport tab to Video Player
+            switchScreen('video');
+
+            activeClassId = classId;
+
+            // Generate/Build the flattened playlist track list for the active class session
+            currentPlaylistArray = [];
+            classObj.topics.forEach((top, tI) => {
+                top.lessons.forEach((les, lI) => {
+                    currentPlaylistArray.push({
+                        ...les,
+                        topicIdx: tI,
+                        lessonIdx: lI,
+                        uniqueId: `${classId}-${tI}-${lI}`
+                    });
+                });
+            });
+
+            // Find current active index in the flat array
+            activeLessonIdxInPlaylist = currentPlaylistArray.findIndex(item => item.topicIdx === topicIdx && item.lessonIdx === lessonIdx);
+
+            // Display components
+            document.getElementById('noVideoState').classList.add('hidden');
+            const iframe = document.getElementById('playerIframe');
+            iframe.classList.remove('hidden');
+            iframe.src = getSafeViewerEmbedUrl(targetLesson.url);
+
+            // Populate Meta Labels
+            document.getElementById('playerLabelClass').innerText = classObj.title;
+            document.getElementById('playerLabelTitle').innerText = targetLesson.title;
+            document.getElementById('headerPathClass').innerText = classObj.title;
+            document.getElementById('headerPathSub').innerText = targetLesson.title;
+
+            // Paint Active sidebar element
+            document.querySelectorAll('[id^="sidebar-btn-"]').forEach(btn => {
+                btn.classList.remove('bg-brand-accent/20', 'text-white', 'border-l-2', 'border-brand-accent');
+                btn.classList.add('text-gray-400');
+            });
+            const matchingBtn = document.getElementById(`sidebar-btn-${classId}-${topicIdx}-${lessonIdx}`);
+            if (matchingBtn) {
+                matchingBtn.classList.add('bg-brand-accent/20', 'text-white', 'border-l-2', 'border-brand-accent');
+                matchingBtn.classList.remove('text-gray-400');
+            }
+
+            const currentUniqueId = `${classId}-${topicIdx}-${lessonIdx}`;
+            updateProgressActionBtnUI(currentUniqueId);
+
+            // Draw right track list
+            renderRightPlaylistTrack();
+
+            // Load persisted notepad
+            document.getElementById('lessonNotepad').value = noteStorageMap[currentUniqueId] || '';
+
+            // Setup direct Google Drive redirection link
+            document.getElementById('btnExternalTarget').href = targetLesson.url;
+
+            // Scroll main viewport content to top
+            document.getElementById('appMainScrollArea').scrollTop = 0;
+
+            // Ensure Accordion for this class is fully open
+            toggleSidebarAccordion(classId, true);
+        }
+
+        function renderRightPlaylistTrack() {
+            const listContainer = document.getElementById('playlistListScroll');
+            listContainer.innerHTML = "";
+
+            let localCompletedCount = 0;
+
+            currentPlaylistArray.forEach((lesson, index) => {
+                const isFinished = completedLessonsArray.includes(lesson.uniqueId);
+                if (isFinished) localCompletedCount++;
+
+                const isActive = index === activeLessonIdxInPlaylist;
+                const isDoc = lesson.url.includes("spreadsheets") || lesson.title.toLowerCase().includes("sheet") || lesson.title.toLowerCase().includes("pdf");
+
+                const elementHtml = `
+                    <button onclick="triggerLoadLesson('${activeClassId}', ${lesson.topicIdx}, ${lesson.lessonIdx})" class="w-full text-left p-3 rounded-xl border text-[11px] font-bold flex items-center justify-between transition-all ${isActive ? 'bg-brand-accent/15 border-brand-accent text-white active-neon-glow' : 'bg-brand-card border-brand-border text-gray-400 hover:text-white hover:bg-brand-surface'}">
+                        <div class="flex items-center gap-2.5 truncate">
+                            <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isFinished ? 'bg-brand-success/15 text-brand-success' : 'bg-brand-bg text-gray-500'}">
+                                <i data-lucide="${isFinished ? 'check' : 'play'}" class="w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="truncate">${lesson.title}</span>
+                        </div>
+                        <span class="text-[9px] text-brand-textMuted shrink-0 font-bold uppercase tracking-wider">${isDoc ? 'Sheet' : 'Video'}</span>
+                    </button>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', elementHtml);
+            });
+
+            // Update Progress Percentage indicator inside Right Playlist Column
+            const pct = currentPlaylistArray.length > 0 ? Math.round((localCompletedCount / currentPlaylistArray.length) * 100) : 0;
+            document.getElementById('playlistProgressTrack').style.width = `${pct}%`;
+            document.getElementById('playlistProgressLabel').innerText = `${localCompletedCount} dari ${currentPlaylistArray.length} Selesai (${pct}%)`;
+
+            lucide.createIcons();
+        }
+
+        function toggleActiveLessonCompletion() {
+            if (activeLessonIdxInPlaylist === -1) return;
+            const activeLessonObj = currentPlaylistArray[activeLessonIdxInPlaylist];
+            const uniqueId = activeLessonObj.uniqueId;
+
+            const existingIndex = completedLessonsArray.indexOf(uniqueId);
+            if (existingIndex > -1) {
+                completedLessonsArray.splice(existingIndex, 1);
+                showCustomToast("Progress dibatalkan", "Materi diatur ulang sebagai belum tonton.", "info");
+            } else {
+                completedLessonsArray.push(uniqueId);
+                showCustomToast("Pelajaran selesai!", "Melanjutkan progres belajar Anda.", "success");
+            }
+
+            localStorage.setItem('orion_v2_completed', JSON.stringify(completedLessonsArray));
+
+            updateProgressActionBtnUI(uniqueId);
+            renderSidebarStructure();
+            renderDashboardCards();
+            renderRightPlaylistTrack();
+            refreshGlobalLearningMetrics();
+        }
+
+        function updateProgressActionBtnUI(uniqueId) {
+            const isCompleted = completedLessonsArray.includes(uniqueId);
+            const btn = document.getElementById('btnMarkComplete');
+            
+            if (isCompleted) {
+                btn.className = "flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-brand-success border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all";
+                btn.querySelector('span').innerText = "Sudah Selesai";
+                btn.querySelector('i').setAttribute('data-lucide', 'check-circle-2');
+            } else {
+                btn.className = "flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accentGlow border border-brand-accent/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all";
+                btn.querySelector('span').innerText = "Tandai Selesai";
+                btn.querySelector('i').setAttribute('data-lucide', 'check-circle');
+            }
+            lucide.createIcons();
+        }
+
+        // Persistent Notepad per Individual Lesson Video
+        document.getElementById('lessonNotepad').addEventListener('input', function() {
+            if (activeLessonIdxInPlaylist === -1) return;
+            const currentLesson = currentPlaylistArray[activeLessonIdxInPlaylist];
+            const uniqueId = currentLesson.uniqueId;
+            noteStorageMap[uniqueId] = this.value;
+            localStorage.setItem('orion_v2_notes', JSON.stringify(noteStorageMap));
+        });
+
+        function searchLessonsInSidebar(query) {
+            const container = document.getElementById('sidebarMenuContainer');
+            if (!query.trim()) {
+                renderSidebarStructure();
+                return;
+            }
+
+            container.innerHTML = "";
+            const formattedQuery = query.toLowerCase();
+
+            ORION_ECOURSE_DATABASE.forEach(classObj => {
+                let matches = [];
+                classObj.topics.forEach((topic, topicIdx) => {
+                    topic.lessons.forEach((lesson, lessonIdx) => {
+                        if (lesson.title.toLowerCase().includes(formattedQuery)) {
+                            matches.push({
+                                lesson,
+                                topicIdx,
+                                lessonIdx,
+                                uniqueId: `${classObj.id}-${topicIdx}-${lessonIdx}`
+                            });
+                        }
+                    });
+                });
+
+                if (matches.length > 0) {
+                    const blockHtml = `
+                        <div class="rounded-xl border border-brand-accent/30 bg-brand-surface/40 p-2 space-y-1.5">
+                            <span class="text-[8px] uppercase tracking-wider text-brand-accentGlow font-black px-2 block truncate">${classObj.title}</span>
+                            <div class="space-y-0.5">
+                                ${matches.map(m => `
+                                    <button onclick="triggerLoadLesson('${classObj.id}', ${m.topicIdx}, ${m.lessonIdx})" class="w-full text-left py-1.5 px-2 rounded-lg text-[11px] font-medium flex items-center justify-between hover:bg-brand-surface text-gray-300">
+                                        <span class="truncate pr-1">${m.lesson.title}</span>
+                                        <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5 text-brand-accent shrink-0"></i>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', blockHtml);
+                }
+            });
+
+            if (container.children.length === 0) {
+                container.innerHTML = `
+                    <div class="p-6 text-center text-brand-textMuted space-y-2">
+                        <i data-lucide="help-circle" class="w-7 h-7 mx-auto text-brand-border"></i>
+                        <p class="text-[11px] font-medium">Modul tidak ditemukan.</p>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        function switchScreen(screenId) {
+            document.getElementById('screenDashboard').classList.add('hidden');
+            document.getElementById('screenVideo').classList.add('hidden');
+            document.getElementById('screenCalculators').classList.add('hidden');
+
+            if (screenId === 'dashboard') {
+                document.getElementById('screenDashboard').classList.remove('hidden');
+                document.getElementById('headerPathClass').innerText = "Dashboard";
+                document.getElementById('headerPathSub').innerText = "Beranda";
+            } else if (screenId === 'video') {
+                document.getElementById('screenVideo').classList.remove('hidden');
+            } else if (screenId === 'calculators') {
+                document.getElementById('screenCalculators').classList.remove('hidden');
+                document.getElementById('headerPathClass').innerText = "Alat Bantu";
+                document.getElementById('headerPathSub').innerText = "Kalkulator Trading";
+            }
+
+            // Automatically close sliding mobile sidebar upon change
+            if (window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
+
+        function toggleSidebarAccordion(classId, forceOpen = false) {
+            const listEl = document.getElementById(`accordion-list-${classId}`);
+            const arrowEl = document.getElementById(`chevron-arrow-${classId}`);
+            const isClosed = listEl.classList.contains('hidden');
+
+            if (isClosed || forceOpen) {
+                listEl.classList.remove('hidden');
+                if (arrowEl) arrowEl.style.transform = "rotate(180deg)";
+            } else {
+                listEl.classList.add('hidden');
+                if (arrowEl) arrowEl.style.transform = "rotate(0deg)";
+            }
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            if (sb.classList.contains('-translate-x-full')) {
+                sb.classList.remove('-translate-x-full');
+            } else {
+                sb.classList.add('-translate-x-full');
+            }
+        }
+
+        function triggerOpenClassFirstLesson(classId) {
+            triggerLoadLesson(classId, 0, 0);
+        }
+
+        function startFirstUnreadLesson() {
+            for (let cls of ORION_ECOURSE_DATABASE) {
+                for (let tIdx = 0; tIdx < cls.topics.length; tIdx++) {
+                    for (let lIdx = 0; lIdx < cls.topics[tIdx].lessons.length; lIdx++) {
+                        const uniqueId = `${cls.id}-${tIdx}-${lIdx}`;
+                        if (!completedLessonsArray.includes(uniqueId)) {
+                            triggerLoadLesson(cls.id, tIdx, lIdx);
+                            return;
+                        }
+                    }
+                }
+            }
+            // Default first
+            triggerLoadLesson(ORION_ECOURSE_DATABASE[0].id, 0, 0);
+        }
+
+        function getLessonCountInClass(classObj) {
+            let count = 0;
+            classObj.topics.forEach(t => count += t.lessons.length);
+            return count;
+        }
+
+        function getCompletedCountInClass(classId) {
+            return completedLessonsArray.filter(id => id.startsWith(classId + '-')).length;
+        }
+
+        function getGrandTotalLessons() {
+            let total = 0;
+            ORION_ECOURSE_DATABASE.forEach(c => total += getLessonCountInClass(c));
+            return total;
+        }
+
+        function refreshGlobalLearningMetrics() {
+            const grandTotal = getGrandTotalLessons();
+            const grandCompleted = completedLessonsArray.length;
+            const globalPct = grandTotal > 0 ? Math.round((grandCompleted / grandTotal) * 100) : 0;
+
+            // Sidebar percentage updates
+            document.getElementById('sidebarProgressPercent').innerText = `${globalPct}%`;
+            document.getElementById('sidebarCompletedCount').innerText = grandCompleted;
+            document.getElementById('sidebarTotalCount').innerText = grandTotal;
+
+            // SVG Sidebar Circle track
+            const circle = document.getElementById('sidebarProgressCircle');
+            const circumference = 2 * Math.PI * 18; // ~113
+            const strokeOffset = circumference - (globalPct / 100) * circumference;
+            circle.style.strokeDashoffset = strokeOffset;
+
+            // Dashboard Widgets
+            document.getElementById('statDashboardTotal').innerText = grandTotal;
+            document.getElementById('statDashboardCompleted').innerText = grandCompleted;
+
+            const badgeLabel = document.getElementById('statDashboardBadge');
+            if (badgeLabel) {
+                if (globalPct >= 90) badgeLabel.innerText = "Master Trader";
+                else if (globalPct >= 60) badgeLabel.innerText = "Pro Trader";
+                else if (globalPct >= 25) badgeLabel.innerText = "Intermediate";
+                else badgeLabel.innerText = "Beginner";
+            }
+        }
+
+        function toggleCinemaMode() {
+            const card = document.getElementById('wrapperVideoCard');
+            if (card.classList.contains('aspect-video')) {
+                card.classList.remove('aspect-video');
+                card.classList.add('h-[70vh]');
+            } else {
+                card.classList.remove('h-[70vh]');
+                card.classList.add('aspect-video');
+            }
+        }
+
+        function calculateRisk() {
+            const capital = parseFloat(document.getElementById('calcCapital').value);
+            const riskPct = parseFloat(document.getElementById('calcRiskPct').value) / 100;
+            const entry = parseFloat(document.getElementById('calcEntry').value);
+            const stopLoss = parseFloat(document.getElementById('calcStopLoss').value);
+
+            if (isNaN(capital) || isNaN(riskPct) || isNaN(entry) || isNaN(stopLoss) || entry <= stopLoss) {
+                showCustomToast("Error Perhitungan", "Pastikan input diisi lengkap dan Entry harus lebih tinggi daripada Stop Loss.", "error");
+                return;
+            }
+
+            const maxLoss = capital * riskPct;
+            const slPct = (entry - stopLoss) / entry;
+            const allocation = maxLoss / slPct;
+
+            document.getElementById('resMaxLoss').innerText = formatRupiah(maxLoss);
+            document.getElementById('resSlPct').innerText = `${(slPct * 100).toFixed(2)}%`;
+            document.getElementById('resAllocation').innerText = formatRupiah(Math.min(allocation, capital));
+            document.getElementById('riskResultBox').classList.remove('hidden');
+            
+            showCustomToast("Berhasil Dihitung", "Manajemen Risiko Posisi diperbarui.", "success");
+        }
+
+        function calculateCompound() {
+            const principal = parseFloat(document.getElementById('compoundPrincipal').value);
+            const rate = parseFloat(document.getElementById('compoundRate').value) / 100;
+            const periods = parseInt(document.getElementById('compoundPeriods').value);
+            const monthlyContribution = parseFloat(document.getElementById('compoundSavings').value) || 0;
+
+            if (isNaN(principal) || isNaN(rate) || isNaN(periods)) {
+                showCustomToast("Error Perhitungan", "Harap isi parameter compounding secara lengkap.", "error");
+                return;
+            }
+
+            let totalAcc = principal;
+            let totalContributed = principal;
+
+            for (let i = 1; i <= periods; i++) {
+                totalAcc = totalAcc * (1 + rate) + monthlyContribution;
+                totalContributed += monthlyContribution;
+            }
+
+            const totalInterestGained = totalAcc - totalContributed;
+
+            document.getElementById('resCompContributed').innerText = formatRupiah(totalContributed);
+            document.getElementById('resCompInterest').innerText = formatRupiah(totalInterestGained);
+            document.getElementById('resCompTotal').innerText = formatRupiah(totalAcc);
+            document.getElementById('compoundResultBox').classList.remove('hidden');
+
+            showCustomToast("Berhasil Diproyeksikan", "Grafik target kekayaan Anda terhitung.", "success");
+        }
+
+        function formatRupiah(val) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+        }
+
+        function showCustomToast(title, body, type = 'success') {
+            const wrapper = document.getElementById('toastContainer');
+            
+            const colorMap = {
+                success: { border: 'border-emerald-500/40', text: 'text-emerald-400', bg: 'bg-emerald-950/20', icon: 'check-circle' },
+                info: { border: 'border-brand-accent/40', text: 'text-brand-accentGlow', bg: 'bg-brand-bg/80', icon: 'info' },
+                error: { border: 'border-red-500/40', text: 'text-red-400', bg: 'bg-red-950/20', icon: 'alert-triangle' }
+            };
+
+            const setting = colorMap[type];
+
+            const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
+            const toastHtml = `
+                <div id="${toastId}" class="p-3.5 rounded-xl border ${setting.border} ${setting.bg} glass-premium flex items-start gap-3 pointer-events-auto transition-all duration-300 transform translate-x-12 opacity-0 max-w-sm">
+                    <i data-lucide="${setting.icon}" class="w-5 h-5 ${setting.text} shrink-0 mt-0.5"></i>
+                    <div>
+                        <h5 class="text-xs font-black text-white">${title}</h5>
+                        <p class="text-[10px] text-brand-textMuted mt-0.5">${body}</p>
+                    </div>
+                </div>
+            `;
+            
+            wrapper.insertAdjacentHTML('beforeend', toastHtml);
+            const el = document.getElementById(toastId);
+            lucide.createIcons();
+
+            // Slide In Animation
+            setTimeout(() => {
+                el.classList.remove('translate-x-12', 'opacity-0');
+            }, 50);
+
+            // Out Animation
+            setTimeout(() => {
+                el.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => el.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
